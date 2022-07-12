@@ -28,16 +28,21 @@ const Register = props => {
 
     initialValues: {
       email: '',
-      username: '',
+      firstName: '',
+      lastName: '',
       password: '',
+      confirmPassword: '',
     },
     validationSchema: Yup.object({
-      email: Yup.string().required("Please Enter Your Email"),
-      username: Yup.string().required("Please Enter Your Username"),
+      email: Yup.string().email("Email should be valid").required("Please Enter Your Email"),
+      firstName: Yup.string().required("Please Enter Your Firstname"),
+      lastName: Yup.string().required("Please Enter Your Lastname"),
       password: Yup.string().required("Please Enter Your Password"),
+      confirmPassword: Yup.string()
+          .oneOf([Yup.ref('password'), null], 'Passwords must match')
     }),
     onSubmit: (values) => {
-      dispatch(registerUser(values));
+      dispatch(registerUser(values, props.history));
     }
   });
 
@@ -46,7 +51,6 @@ const Register = props => {
     registrationError: state.Account.registrationError,
     loading: state.Account.loading,
   }));
-  console.log("user",user);
 
   useEffect(() => {
     dispatch(apiError(""));
@@ -133,20 +137,37 @@ const Register = props => {
                       </div>
 
                       <div className="mb-3">
-                        <Label className="form-label">Username</Label>
+                        <Label className="form-label">First Name</Label>
                         <Input
-                          name="username"
+                          name="firstName"
                           type="text"
-                          placeholder="Enter username"
+                          placeholder="Enter firstname"
                           onChange={validation.handleChange}
                           onBlur={validation.handleBlur}
-                          value={validation.values.username || ""}
+                          value={validation.values.firstName || ""}
                           invalid={
-                            validation.touched.username && validation.errors.username ? true : false
+                            validation.touched.firstName && validation.errors.firstName ? true : false
                           }
                         />
-                        {validation.touched.username && validation.errors.username ? (
-                          <FormFeedback type="invalid">{validation.errors.username}</FormFeedback>
+                        {validation.touched.firstName && validation.errors.firstName ? (
+                          <FormFeedback type="invalid">{validation.errors.firstName}</FormFeedback>
+                        ) : null}
+                      </div>
+                      <div className="mb-3">
+                        <Label className="form-label">Last Name</Label>
+                        <Input
+                            name="lastName"
+                            type="text"
+                            placeholder="Enter lastname"
+                            onChange={validation.handleChange}
+                            onBlur={validation.handleBlur}
+                            value={validation.values.lastName || ""}
+                            invalid={
+                              validation.touched.lastName && validation.errors.lastName ? true : false
+                            }
+                        />
+                        {validation.touched.lastName && validation.errors.lastName ? (
+                            <FormFeedback type="invalid">{validation.errors.lastName}</FormFeedback>
                         ) : null}
                       </div>
                       <div className="mb-3">
@@ -164,6 +185,24 @@ const Register = props => {
                         />
                         {validation.touched.password && validation.errors.password ? (
                           <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
+                        ) : null}
+                      </div>
+
+                      <div className="mb-3">
+                        <Label className="form-label">Confirm Password</Label>
+                        <Input
+                            name="confirmPassword"
+                            type="password"
+                            placeholder="Enter Confirmation of the Password"
+                            onChange={validation.handleChange}
+                            onBlur={validation.handleBlur}
+                            value={validation.values.confirmPassword || ""}
+                            invalid={
+                              validation.touched.confirmPassword && validation.errors.confirmPassword ? true : false
+                            }
+                        />
+                        {validation.touched.confirmPassword && validation.errors.confirmPassword ? (
+                            <FormFeedback type="invalid">{validation.errors.confirmPassword}</FormFeedback>
                         ) : null}
                       </div>
 

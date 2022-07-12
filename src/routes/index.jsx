@@ -173,12 +173,14 @@ import Pages500 from "../pages/Utility/pages-500"
 import ContactsGrid from "../pages/Contacts/contacts-grid"
 import ContactsList from "../pages/Contacts/ContactList/contacts-list"
 import ContactsProfile from "../pages/Contacts/ContactsProfile/contacts-profile"
+import UserCompaniesList from "../pages/Companies/UserCompaniesList";
 
 const authProtectedRoutes = [
   { path: "/dashboard", component: Dashboard },
   { path: "/dashboard-saas", component: DashboardSaas },
   { path: "/dashboard-crypto", component: DashboardCrypto },
   { path: "/blog", component: Blog },
+  { path: "/companies-list", component: UserCompaniesList },
 
 //   //Crypto
   { path: "/crypto-wallet", component: CryptoWallet },
@@ -350,4 +352,8 @@ const publicRoutes = [
   { path: "/auth-two-step-verification-2", component: TwostepVerification2 },
 ]
 
-export { authProtectedRoutes,publicRoutes }
+const layoutDisabledRoutes = [
+  "/companies-list",
+]
+
+export { authProtectedRoutes, publicRoutes, layoutDisabledRoutes }

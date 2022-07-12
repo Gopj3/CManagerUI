@@ -10,7 +10,7 @@ import {
   postFakeLogin,
   postJwtLogin,
   postSocialLogin,
-} from "../../../helpers/fakebackend_helper";
+} from "../../../helpers/backend_helper";
 
 const fireBaseBackend = getFirebaseBackend();
 
@@ -21,10 +21,9 @@ function* loginUser({ payload: { user, history } }) {
         password: user.password,
       });
 
-      localStorage.setItem("authUser", JSON.stringify(response));
-      console.log(response);
-      // yield put(loginSuccess(response));
-    // history.push("/dashboard");
+      localStorage.setItem("token", response.token);
+      yield put(loginSuccess(response.token));
+      history.push("/companies-list");
   } catch (error) {
     yield put(apiError(error));
   }
@@ -33,11 +32,7 @@ function* loginUser({ payload: { user, history } }) {
 function* logoutUser({ payload: { history } }) {
   try {
     localStorage.removeItem("authUser");
-
-    if (import.meta.env.VITE_APP_DEFAULTAUTH === "firebase") {
-      const response = yield call(fireBaseBackend.logout);
-      yield put(logoutUserSuccess(response));
-    }
+    localStorage.removeItem("token");
     history.push("/login");
   } catch (error) {
     yield put(apiError(error));

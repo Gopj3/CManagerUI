@@ -5,7 +5,7 @@ import { Switch, BrowserRouter as Router } from "react-router-dom"
 import { connect } from "react-redux"
 
 // Import Routes all
-import { authProtectedRoutes,publicRoutes } from "./routes"
+import {authProtectedRoutes, layoutDisabledRoutes, publicRoutes} from "./routes"
 
 // Import all middleware
 import Authmiddleware from "./routes/route"
@@ -64,6 +64,7 @@ const App = props => {
             <Authmiddleware
               path={route.path}
               layout={NonAuthLayout}
+              layoutDisabled={false}
               component={route.component}
               key={idx}
               isAuthProtected={false}
@@ -75,6 +76,7 @@ const App = props => {
             <Authmiddleware
               path={route.path}
               layout={Layout}
+              layoutDisabled={layoutDisabledRoutes.includes(route.path)}
               component={route.component}
               key={idx}
               isAuthProtected={true}

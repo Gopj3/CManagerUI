@@ -5,18 +5,25 @@ import { Route, Redirect } from "react-router-dom"
 const Authmiddleware = ({
   component: Component,
   layout: Layout,
+  layoutDisabled,
   isAuthProtected,
   ...rest
 }) => (
   <Route
     {...rest}
     render={props => {
-      if (isAuthProtected && !localStorage.getItem("authUser")) {
+      if (isAuthProtected && !localStorage.getItem("token")) {
         return (
           <Redirect
             to={{ pathname: "/login", state: { from: props.location } }}
           />
         )
+      }
+
+      if (layoutDisabled) {
+          return (
+              <Component {...props}/>
+          )
       }
 
       return (

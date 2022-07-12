@@ -113,3 +113,4 @@ export const ON_ADD_COMMENT = "/comments-product-add-comment"
 
 // Real paths
 export const SERVER_LOGIN = '/Account/login';
+export const GET_USER_COMPANIES_LIST = '/Company/list';
