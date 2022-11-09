@@ -1,2 +1,0 @@
-# CManagerUI
-CManager ui
