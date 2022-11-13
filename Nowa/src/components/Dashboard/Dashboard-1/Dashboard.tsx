@@ -1,12 +1,25 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
-import {useTable,useSortBy,useGlobalFilter,usePagination} from "react-table";
-import {Breadcrumb,Col,Row,Card,Button,ProgressBar} from "react-bootstrap";
+import {
+  useTable,
+  useSortBy,
+  useGlobalFilter,
+  usePagination,
+} from "react-table";
+import {
+  Breadcrumb,
+  Col,
+  Row,
+  Card,
+  Button,
+  ProgressBar,
+} from "react-bootstrap";
 import { Link } from "react-router-dom";
 import * as Dashboarddata from "./data";
-import {COLUMNS,DATATABLE,GlobalFilter} from "./data"
+import { COLUMNS, DATATABLE, GlobalFilter } from "./data";
+import { useDispatch } from "react-redux";
 export default function Dashboard() {
-
+  // const disp = useDispatch();
   const tableInstance = useTable(
     {
       columns: COLUMNS,
@@ -33,10 +46,10 @@ export default function Dashboard() {
     gotoPage,
     pageCount,
     setPageSize,
-  }:any = tableInstance;
+  }: any = tableInstance;
 
   const { globalFilter, pageIndex, pageSize } = state;
- 
+
   return (
     <React.Fragment>
       <div className="breadcrumb-header justify-content-between">
@@ -394,7 +407,7 @@ export default function Dashboard() {
             </Card.Header>
             <Card.Body>
               {/* <div id="statistics1"> */}
-                <Dashboarddata.Statistics1 />
+              <Dashboarddata.Statistics1 />
               {/* </div> */}
             </Card.Body>
           </Card>
@@ -1168,132 +1181,141 @@ export default function Dashboard() {
             </Card.Header>
             <Card.Body className="pt-0 example1-table">
               <div className="table-responsive">
-              <>
-      <div className="d-flex">
-        <select
-          className=" mb-4 selectpage border me-1"
-          value={pageSize}
-          onChange={(e) => setPageSize(Number(e.target.value))}
-        >
-          {[10, 25, 50].map((pageSize) => (
-            <option key={pageSize} value={pageSize}>
-              Show {pageSize}
-            </option>
-          ))}
-        </select>
-        <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter} />
-      </div>
-      <table
-        {...getTableProps()}
-        className="table table-bordered text-nowrap mb-0"
-      >
-        <thead>
-          {headerGroups.map((headerGroup:any) => (
-            <tr {...headerGroup.getHeaderGroupProps()}>
-              {headerGroup.headers.map((column:any) => (
-                <th
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  className={column.className}
-                >
-                  <span className="tabletitle">{column.render("Header")}</span>
-                  <span>
-                    {column.isSorted ? (
-                      column.isSortedDesc ? (
-                        <i className="fa fa-angle-down"></i>
-                      ) : (
-                        <i className="fa fa-angle-up"></i>
-                      )
-                    ) : (
-                      ""
-                    )}
-                  </span>
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-        <tbody {...getTableBodyProps()}>
-          {page.map((row:any) => {
-            prepareRow(row);
-            return (
-              <tr className="text-center" {...row.getRowProps()}>
-                {row.cells.map((cell:any) => {
-                  return (
-                    <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
-                  );
-                })}
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-      <div className="d-block d-sm-flex mt-4 ">
-        <span className="">
-          Page{" "}
-          <strong>
-            {pageIndex + 1} of {pageOptions.length}
-          </strong>{" "}
-        </span>
-        <span className="ms-sm-auto ">
-          <Button
-            variant=""
-            className="btn-default tablebutton me-2 d-sm-inline d-block my-1"
-            onClick={() => gotoPage(0)}
-            disabled={!canPreviousPage}
-          >
-            {" Previous "}
-          </Button>
-          <Button
-            variant=""
-            className="btn-default tablebutton me-2 my-1"
-            onClick={() => {
-              previousPage();
-            }}
-            disabled={!canPreviousPage}
-          >
-            {" << "}
-          </Button>
-          <Button
-            variant=""
-            className="btn-default tablebutton me-2 my-1"
-            onClick={() => {
-              previousPage();
-            }}
-            disabled={!canPreviousPage}
-          >
-            {" < "}
-          </Button>
-          <Button
-            variant=""
-            className="btn-default tablebutton me-2 my-1"
-            onClick={() => {
-              nextPage();
-            }}
-            disabled={!canNextPage}
-          >
-            {" > "}
-          </Button>
-          <Button
-            variant=""
-            className="btn-default tablebutton me-2 my-1"
-            onClick={() => {
-              nextPage();
-            }}
-            disabled={!canNextPage}
-          >
-            {" >> "}
-          </Button>
-          <Button
-            variant=""
-            className="btn-default tablebutton me-2 d-sm-inline d-block my-1"
-            onClick={() => gotoPage(pageCount - 1)}
-            disabled={!canNextPage}
-          >
-            {" Next "}
-          </Button>
-        </span>
-      </div>
-    </>
+                <>
+                  <div className="d-flex">
+                    <select
+                      className=" mb-4 selectpage border me-1"
+                      value={pageSize}
+                      onChange={(e) => setPageSize(Number(e.target.value))}
+                    >
+                      {[10, 25, 50].map((pageSize) => (
+                        <option key={pageSize} value={pageSize}>
+                          Show {pageSize}
+                        </option>
+                      ))}
+                    </select>
+                    <GlobalFilter
+                      filter={globalFilter}
+                      setFilter={setGlobalFilter}
+                    />
+                  </div>
+                  <table
+                    {...getTableProps()}
+                    className="table table-bordered text-nowrap mb-0"
+                  >
+                    <thead>
+                      {headerGroups.map((headerGroup: any) => (
+                        <tr {...headerGroup.getHeaderGroupProps()}>
+                          {headerGroup.headers.map((column: any) => (
+                            <th
+                              {...column.getHeaderProps(
+                                column.getSortByToggleProps()
+                              )}
+                              className={column.className}
+                            >
+                              <span className="tabletitle">
+                                {column.render("Header")}
+                              </span>
+                              <span>
+                                {column.isSorted ? (
+                                  column.isSortedDesc ? (
+                                    <i className="fa fa-angle-down"></i>
+                                  ) : (
+                                    <i className="fa fa-angle-up"></i>
+                                  )
+                                ) : (
+                                  ""
+                                )}
+                              </span>
+                            </th>
+                          ))}
+                        </tr>
+                      ))}
+                    </thead>
+                    <tbody {...getTableBodyProps()}>
+                      {page.map((row: any) => {
+                        prepareRow(row);
+                        return (
+                          <tr className="text-center" {...row.getRowProps()}>
+                            {row.cells.map((cell: any) => {
+                              return (
+                                <td {...cell.getCellProps()}>
+                                  {cell.render("Cell")}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  <div className="d-block d-sm-flex mt-4 ">
+                    <span className="">
+                      Page{" "}
+                      <strong>
+                        {pageIndex + 1} of {pageOptions.length}
+                      </strong>{" "}
+                    </span>
+                    <span className="ms-sm-auto ">
+                      <Button
+                        variant=""
+                        className="btn-default tablebutton me-2 d-sm-inline d-block my-1"
+                        onClick={() => gotoPage(0)}
+                        disabled={!canPreviousPage}
+                      >
+                        {" Previous "}
+                      </Button>
+                      <Button
+                        variant=""
+                        className="btn-default tablebutton me-2 my-1"
+                        onClick={() => {
+                          previousPage();
+                        }}
+                        disabled={!canPreviousPage}
+                      >
+                        {" << "}
+                      </Button>
+                      <Button
+                        variant=""
+                        className="btn-default tablebutton me-2 my-1"
+                        onClick={() => {
+                          previousPage();
+                        }}
+                        disabled={!canPreviousPage}
+                      >
+                        {" < "}
+                      </Button>
+                      <Button
+                        variant=""
+                        className="btn-default tablebutton me-2 my-1"
+                        onClick={() => {
+                          nextPage();
+                        }}
+                        disabled={!canNextPage}
+                      >
+                        {" > "}
+                      </Button>
+                      <Button
+                        variant=""
+                        className="btn-default tablebutton me-2 my-1"
+                        onClick={() => {
+                          nextPage();
+                        }}
+                        disabled={!canNextPage}
+                      >
+                        {" >> "}
+                      </Button>
+                      <Button
+                        variant=""
+                        className="btn-default tablebutton me-2 d-sm-inline d-block my-1"
+                        onClick={() => gotoPage(pageCount - 1)}
+                        disabled={!canNextPage}
+                      >
+                        {" Next "}
+                      </Button>
+                    </span>
+                  </div>
+                </>
               </div>
             </Card.Body>
           </Card>

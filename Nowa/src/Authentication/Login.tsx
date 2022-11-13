@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ILoginModel } from "./models";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
 
 const initialLoginState: ILoginModel = {
   email: "",
@@ -16,10 +17,7 @@ const validationSchema = Yup.object().shape({
 });
 
 const SignIn = () => {
-  const [err, setError] = useState("");
-  const [data, setData] = useState(initialLoginState);
-  const { email, password } = data;
-
+  // const dispatch = useDispatch();
   const navigate = useNavigate();
   const routeChange = () => {
     const path = `/dashboard/dashboard-1/`;
@@ -63,7 +61,6 @@ const SignIn = () => {
                           <div className="panel panel-primary">
                             <div className=" tab-menu-heading mb-2 border-bottom-0">
                               <div className="tabs-menu1">
-                                {err && <Alert variant="danger">{err}</Alert>}
                                 <Formik
                                   initialValues={initialLoginState}
                                   validationSchema={validationSchema}

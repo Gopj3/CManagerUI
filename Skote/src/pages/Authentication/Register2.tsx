@@ -1,45 +1,56 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import {Col, Container, Form, Row, Input, Label, FormFeedback, Alert} from "reactstrap";
-
-// Formik validation
+import { Link, useHistory } from "react-router-dom";
+import {
+  Alert,
+  Col,
+  Container,
+  Form,
+  FormFeedback,
+  Input,
+  Label,
+  Row,
+} from "reactstrap";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-
-// import images
 import logodark from "../../assets/images/logo-dark.png";
 import logolight from "../../assets/images/logo-light.png";
 import CarouselPage from "./CarouselPage";
-import {useDispatch, useSelector} from "react-redux";
-import {loginUser} from "../../store/auth/login/actions";
-import {useHistory} from "react-router-dom/cjs/react-router-dom";
-import {isLoginLoading, loginError} from "../../store/auth/login/loginSelector";
+import { registerUser } from "../../store/auth/register/actions";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  isLoading,
+  registrationError,
+} from "../../store/auth/register/registerSelector";
+import { RegisterModel } from "./models";
 
-const Login2 = () => {
-  const dispatch = useDispatch();
+const initialValues: RegisterModel = {
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
+
+const Register2 = () => {
   const history = useHistory();
-  const error = useSelector(loginError);
-  const isLoading = useSelector(isLoginLoading);
+  const dispatch = useDispatch();
+  const apiError = useSelector(registrationError);
+  const registerLoading = useSelector(isLoading);
+  document.title = "Register";
 
-  //meta title
-  document.title="Login 2 | Skote - Vite React Admin & Dashboard Template";
-
-  // Form validation 
   const validation = useFormik({
-    // enableReinitialize : use this flag when initial values needs to be changed
     enableReinitialize: true,
-
-    initialValues: {
-      email: '',
-      password: '',
-    },
+    initialValues,
     validationSchema: Yup.object({
-      email: Yup.string().required("Please Enter Your Email"),
+      email: Yup.string()
+        .email("Email should be valid")
+        .required("Please Enter Your Email"),
       password: Yup.string().required("Please Enter Your Password"),
+      confirmPassword: Yup.string()
+        .required("Please Enter Your Confirm Password")
+        .oneOf([Yup.ref("password"), null], "Passwords must match"),
     }),
-    onSubmit: (values) => {
-      dispatch(loginUser(values, history));
-    }
+    onSubmit: (values: RegisterModel) => {
+      dispatch(registerUser(values, history));
+    },
   });
   return (
     <React.Fragment>
@@ -53,7 +64,7 @@ const Login2 = () => {
                 <div className="w-100">
                   <div className="d-flex flex-column h-100">
                     <div className="mb-4 mb-md-5">
-                      <Link to="/dashboard" className="d-block auth-logo">
+                      <Link to="dashboard" className="d-block auth-logo">
                         <img
                           src={logodark}
                           alt=""
@@ -70,24 +81,28 @@ const Login2 = () => {
                     </div>
                     <div className="my-auto">
                       <div>
-                        <h5 className="text-primary">Welcome Back !</h5>
+                        <h5 className="text-primary">Register account</h5>
                         <p className="text-muted">
-                          Sign in to continue to Skote.
+                          Get your free Skote account now.
                         </p>
                       </div>
 
                       <div className="mt-4">
-                        <Form className="form-horizontal"
-                          onSubmit={(e) => {
+                        <Form
+                          className="form-horizontal"
+                          onSubmit={(e: SubmitEvent) => {
                             e.preventDefault();
                             validation.handleSubmit();
                             return false;
                           }}
                         >
-                          {error ? <Alert color="danger">{error}</Alert> : null}
+                          {apiError ? (
+                            <Alert color="danger">{apiError}</Alert>
+                          ) : null}
                           <div className="mb-3">
                             <Label className="form-label">Email</Label>
                             <Input
+                              id="email"
                               name="email"
                               className="form-control"
                               placeholder="Enter email"
@@ -96,63 +111,90 @@ const Login2 = () => {
                               onBlur={validation.handleBlur}
                               value={validation.values.email || ""}
                               invalid={
-                                !!(validation.touched.email && validation.errors.email)
+                                !!(
+                                  validation.touched.email &&
+                                  validation.errors.email
+                                )
                               }
                             />
-                            {validation.touched.email && validation.errors.email ? (
-                              <FormFeedback type="invalid">{validation.errors.email}</FormFeedback>
+                            {validation.touched.email &&
+                            validation.errors.email ? (
+                              <FormFeedback type="invalid">
+                                {validation.errors.email}
+                              </FormFeedback>
                             ) : null}
                           </div>
-
                           <div className="mb-3">
                             <Label className="form-label">Password</Label>
                             <Input
                               name="password"
-                              value={validation.values.password || ""}
                               type="password"
                               placeholder="Enter Password"
                               onChange={validation.handleChange}
                               onBlur={validation.handleBlur}
+                              value={validation.values.password || ""}
                               invalid={
-                                !!(validation.touched.password && validation.errors.password)
+                                !!(
+                                  validation.touched.password &&
+                                  validation.errors.password
+                                )
                               }
                             />
-                            {validation.touched.password && validation.errors.password ? (
-                              <FormFeedback type="invalid">{validation.errors.password}</FormFeedback>
+                            {validation.touched.password &&
+                            validation.errors.password ? (
+                              <FormFeedback type="invalid">
+                                {validation.errors.password}
+                              </FormFeedback>
                             ) : null}
                           </div>
-
-                          <div className="form-check">
+                          <div className="mb-3">
+                            <Label className="form-label">
+                              Confirm Password
+                            </Label>
                             <Input
-                              type="checkbox"
-                              className="form-check-input"
-                              id="auth-remember-check"
+                              name="confirmPassword"
+                              type="password"
+                              placeholder="Enter Confirmation of the Password"
+                              onChange={validation.handleChange}
+                              onBlur={validation.handleBlur}
+                              value={validation.values.confirmPassword || ""}
+                              invalid={
+                                !!(
+                                  validation.touched.confirmPassword &&
+                                  validation.errors.confirmPassword
+                                )
+                              }
                             />
-                            <label
-                              className="form-check-label"
-                              htmlFor="auth-remember-check"
-                            >
-                              Remember me
-                            </label>
+                            {validation.touched.confirmPassword &&
+                            validation.errors.confirmPassword ? (
+                              <FormFeedback type="invalid">
+                                {validation.errors.confirmPassword}
+                              </FormFeedback>
+                            ) : null}
+                          </div>
+                          <div>
+                            <p className="mb-0">
+                              By registering you agree to the Skote{" "}
+                              <a href="#" className="text-primary">
+                                Terms of Use
+                              </a>
+                            </p>
                           </div>
 
-                          <div className="mt-3 d-grid">
+                          <div className="mt-4">
                             <button
-                              className="btn btn-primary btn-block"
+                              className="btn btn-primary btn-block "
                               type="submit"
-                              disabled={isLoading}
+                              disabled={registerLoading}
                             >
-                              Log In
+                              Register
                             </button>
                           </div>
-
                         </Form>
 
                         <Form action="dashboard">
                           <div className="mt-4 text-center">
-                            <h5 className="font-size-14 mb-3">
-                              Sign in with
-                            </h5>
+                            <h5 className="font-size-14 mb-3">Sign up using</h5>
 
                             <ul className="list-inline">
                               <li className="list-inline-item">
@@ -182,15 +224,17 @@ const Login2 = () => {
                             </ul>
                           </div>
                         </Form>
+
                         <div className="mt-5 text-center">
                           <p>
-                            Don&apos;t have an account ?
+                            Already have an account ?{" "}
                             <Link
-                              to="/auth/register"
-                              className="fw-medium text-primary"
+                              to="login"
+                              className="font-weight-medium text-primary"
                             >
-                              Signup now
-                            </Link>
+                              {" "}
+                              Login
+                            </Link>{" "}
                           </p>
                         </div>
                       </div>
@@ -198,7 +242,8 @@ const Login2 = () => {
 
                     <div className="mt-4 mt-md-5 text-center">
                       <p className="mb-0">
-                        © {new Date().getFullYear()} Skote. Crafted with{" "}
+                        © {new Date().getFullYear()}
+                        Skote. Crafted with{" "}
                         <i className="mdi mdi-heart text-danger"></i> by
                         Themesbrand
                       </p>
@@ -214,4 +259,4 @@ const Login2 = () => {
   );
 };
 
-export default Login2;
+export default Register2;
